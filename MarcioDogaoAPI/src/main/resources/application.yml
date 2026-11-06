@@ -1,0 +1,38 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: marciodogao-api
+  datasource:
+    # Padrão: login com o usuário do Windows (o SQL Server local está só com autenticação do Windows).
+    # Para usar usuário/senha do SQL Server, troque integratedSecurity=true por
+    # user=...;password=... ou defina DB_URL / DB_USER / DB_PASSWORD.
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=MarcioDogaoAPP;integratedSecurity=true;encrypt=true;trustServerCertificate=true}
+    username: ${DB_USER:}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none   # o banco é criado/alterado pelo projeto SQL, nunca pela API
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true
+
+restaurante:
+  fuso-horario: America/Sao_Paulo
+  # Das 18:00 até as 05:00 vale o preço "Noturno" da tabela Preco; no resto do dia vale "Manha".
+  turno-noturno-inicio: "18:00"
+  turno-noturno-fim: "05:00"
+  jwt:
+    # Troque em produção: export JWT_SECRET="uma frase longa e secreta com 32+ caracteres"
+    secret: ${JWT_SECRET:troque-este-segredo-de-desenvolvimento-marcio-dogao-2026}
+    expiracao-horas: 12
+  cors:
+    origens-permitidas: ${CORS_ORIGINS:*}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
