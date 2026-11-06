@@ -1,6 +1,8 @@
 package br.com.marciodogao.api.exception;
 
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -50,6 +52,12 @@ public class TratadorDeErros {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail integridade(DataIntegrityViolationException e) {
         return problema(HttpStatus.CONFLICT, "Conflito", "A operação conflita com dados já gravados no banco. Tente novamente.");
+    }
+
+    @ExceptionHandler({CannotCreateTransactionException.class, DataAccessResourceFailureException.class})
+    public ProblemDetail bancoForaDoAr(Exception e) {
+        return problema(HttpStatus.SERVICE_UNAVAILABLE, "Banco de dados indisponível",
+                "Não foi possível conectar ao SQL Server. Verifique se ele está rodando e com TCP/IP habilitado na porta 1433.");
     }
 
     private static ProblemDetail problema(HttpStatus status, String titulo, String detalhe) {

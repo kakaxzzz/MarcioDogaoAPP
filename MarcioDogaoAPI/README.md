@@ -25,6 +25,16 @@ O Java (JDBC) só conecta por TCP, que hoje está **desligado** no seu servidor:
 3. Em *Propriedades do TCP/IP* → aba *Endereços IP* → *IPAll*: `Porta TCP` = **1433**.
 4. *Serviços do SQL Server* → reinicie o **SQL Server (MSSQLSERVER)**.
 
+Ou, no PowerShell **como Administrador**:
+
+```powershell
+$tcp = 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL17.MSSQLSERVER\MSSQLServer\SuperSocketNetLib\Tcp'
+Set-ItemProperty $tcp -Name Enabled -Value 1
+Set-ItemProperty "$tcp\IPAll" -Name TcpPort -Value '1433'
+Set-ItemProperty "$tcp\IPAll" -Name TcpDynamicPorts -Value ''
+Restart-Service MSSQLSERVER -Force
+```
+
 Por padrão a API entra com seu **usuário do Windows** (`integratedSecurity=true`). A DLL necessária (`lib/mssql-jdbc_auth-*.dll`) é baixada automaticamente no build.
 
 Para usar usuário/senha do SQL Server (por exemplo, num servidor na nuvem), defina:
@@ -37,15 +47,18 @@ set DB_PASSWORD=senha
 
 ## 3. Rodar
 
-Precisa do JDK 21. Você já tem um junto com o Android Studio:
+Precisa do JDK 21. Você já tem um junto com o Android Studio. No **PowerShell**, dentro da pasta `MarcioDogaoAPI`:
 
-```bash
-set JAVA_HOME=C:\Program Files\Android\openjdk\jdk-21.0.8
+```powershell
+cd "C:\Users\kaike\OneDrive\Documentos\SQL Server Management Studio\MarcioDogaoAPP\MarcioDogaoAPI"
+$env:JAVA_HOME = "C:\Program Files\Android\openjdk\jdk-21.0.8"
+.\mvnw.cmd spring-boot:run
 ```
 
-```bash
-mvnw.cmd spring-boot:run
-```
+(No `cmd` antigo seria `set JAVA_HOME=...` e `mvnw.cmd spring-boot:run`.)
+
+Espere aparecer `Started MarcioDogaoApiApplication` e deixe a janela aberta: fechar o terminal desliga a API.
+Se o SQL Server estiver sem TCP/IP, a API sobe do mesmo jeito, mas as chamadas respondem `503 Banco de dados indisponível`.
 
 - API: `http://localhost:8080`
 - Documentação interativa (Swagger): `http://localhost:8080/swagger-ui.html`

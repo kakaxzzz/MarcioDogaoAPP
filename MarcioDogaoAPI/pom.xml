@@ -81,7 +81,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- DLL da autenticação do Windows (integratedSecurity) copiada para ./lib -->
-                    <jvmArguments>-Djava.library.path=${project.basedir}/lib</jvmArguments>
+                    <!-- Entre aspas: o caminho do projeto tem espaços ("SQL Server Management Studio") -->
+                    <jvmArguments>"-Djava.library.path=${project.basedir}/lib"</jvmArguments>
                 </configuration>
             </plugin>
             <plugin>

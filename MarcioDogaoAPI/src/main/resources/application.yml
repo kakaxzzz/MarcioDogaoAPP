@@ -17,9 +17,12 @@ spring:
       ddl-auto: none   # o banco é criado/alterado pelo projeto SQL, nunca pela API
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    # Dialeto fixo: a API sobe mesmo se o banco estiver fora do ar (as chamadas ao banco devolvem 503).
+    database-platform: org.hibernate.dialect.SQLServerDialect
     properties:
       hibernate:
         format_sql: true
+        boot.allow_jdbc_metadata_access: false
 
 restaurante:
   fuso-horario: America/Sao_Paulo
