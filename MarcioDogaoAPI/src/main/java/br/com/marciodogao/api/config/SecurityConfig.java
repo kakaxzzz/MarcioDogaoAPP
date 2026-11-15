@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.List;
 
 /**
@@ -44,7 +46,17 @@ public class SecurityConfig {
     private final RestauranteProperties props;
 
     public SecurityConfig(RestauranteProperties props) {
-        byte[] segredo = props.jwt().secret().getBytes(StandardCharsets.UTF_8);
+        String configurado = props.jwt().secret();
+        byte[] segredo;
+        if (configurado == null || configurado.isBlank()) {
+            // Nenhum segredo fica no código: sem JWT_SECRET, sorteia um a cada inicialização.
+            segredo = new byte[48];
+            new SecureRandom().nextBytes(segredo);
+            LoggerFactory.getLogger(SecurityConfig.class).warn(
+                    "JWT_SECRET não definido: usando um segredo sorteado. Os logins deixam de valer quando a API reiniciar.");
+        } else {
+            segredo = configurado.getBytes(StandardCharsets.UTF_8);
+        }
         if (segredo.length < 32) {
             throw new IllegalStateException("restaurante.jwt.secret (JWT_SECRET) precisa ter pelo menos 32 caracteres.");
         }

@@ -30,8 +30,10 @@ restaurante:
   turno-noturno-inicio: "17:00"
   turno-noturno-fim: "05:00"
   jwt:
-    # Troque em produção: export JWT_SECRET="uma frase longa e secreta com 32+ caracteres"
-    secret: ${JWT_SECRET:troque-este-segredo-de-desenvolvimento-marcio-dogao-2026}
+    # Segredo que assina os tokens de login. Nunca fica escrito aqui: vem da variável de ambiente
+    # JWT_SECRET (32+ caracteres). Sem ela, a API sorteia um segredo novo a cada vez que liga
+    # (bom para desenvolvimento; os logins caem quando a API reinicia).
+    secret: ${JWT_SECRET:}
     expiracao-horas: 12
   cors:
     origens-permitidas: ${CORS_ORIGINS:*}

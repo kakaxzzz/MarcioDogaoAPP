@@ -66,7 +66,7 @@ Se o SQL Server estiver sem TCP/IP, a API sobe do mesmo jeito, mas as chamadas r
 
 No **emulador Android**, `localhost` do PC é `http://10.0.2.2:8080`. No celular de verdade, use o IP do PC na rede (ex.: `http://192.168.0.10:8080`) e libere a porta 8080 no firewall do Windows.
 
-Em produção, troque o segredo do token: `set JWT_SECRET=uma-frase-longa-com-mais-de-32-caracteres`.
+Nenhuma chave ou senha fica no código. O segredo que assina os logins vem da variável de ambiente `JWT_SECRET` (32+ caracteres); sem ela, a API sorteia um novo a cada vez que liga. Em produção, defina: `$env:JWT_SECRET = "uma-frase-longa-com-mais-de-32-caracteres"`.
 
 ## App do garçom (telas)
 
