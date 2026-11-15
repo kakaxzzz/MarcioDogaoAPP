@@ -1,0 +1,20 @@
+# Perfil de DEMONSTRAÇÃO: banco em memória (H2) com dados de exemplo, sem precisar do SQL Server.
+# Os dados somem quando a API é desligada. Rodar com:
+#   .\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=demo"
+spring:
+  datasource:
+    url: jdbc:h2:mem:marciodogao-demo;MODE=MSSQLServer;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        boot.allow_jdbc_metadata_access: true
+
+# Login de exemplo criado pelo DadosDeDemonstracao (só existe neste perfil)
+demo:
+  email: garcom@mdogao.demo
+  senha: demo1234

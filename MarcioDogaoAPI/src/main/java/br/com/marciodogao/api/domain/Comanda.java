@@ -43,6 +43,10 @@ public class Comanda {
     @Column(name = "Nome_funcionario", length = 50)
     private String nomeFuncionario;
 
+    /** Coluna Status do banco: "Aberta" ou "Fechada". A API mantém em dia a cada alteração. */
+    @Column(name = "Status", nullable = false, length = 20)
+    private String statusBanco = "Aberta";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CodLog")
     private Login login;
@@ -74,6 +78,7 @@ public class Comanda {
 
     public void recalcularValor(Turno turno) {
         this.valorPedido = pedidos.stream().map(p -> p.valorCobrado(turno)).reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.statusBanco = status() == StatusComanda.FECHADA ? "Fechada" : "Aberta";
     }
 
     public Integer getCodComan() { return codComan; }

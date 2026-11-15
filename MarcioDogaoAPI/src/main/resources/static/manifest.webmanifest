@@ -1,0 +1,11 @@
+{
+  "name": "Mdogão · Atendimento",
+  "short_name": "Mdogão",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FFF8F2",
+  "theme_color": "#A31D1D",
+  "icons": [
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

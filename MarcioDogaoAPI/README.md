@@ -68,6 +68,22 @@ No **emulador Android**, `localhost` do PC é `http://10.0.2.2:8080`. No celular
 
 Em produção, troque o segredo do token: `set JWT_SECRET=uma-frase-longa-com-mais-de-32-caracteres`.
 
+## App do garçom (telas)
+
+As telas ficam em `src/main/resources/static` e são servidas pela própria API em **`http://localhost:8080/`**: Pedido, Mesas e Dashboard (visão geral, caixa e cadastro do cardápio), com o visual do projeto do Figma. Funciona no navegador do computador e do celular, e no Android dá para "Adicionar à tela inicial".
+
+**Modo demonstração** (não precisa do SQL Server; usa um banco em memória com dados de exemplo, que somem ao desligar):
+
+```powershell
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=demo"
+```
+
+Na tela de login, use o botão **Entrar na demonstração**.
+
+**Com o banco de verdade** (SQL Server com TCP/IP ligado): rode sem o perfil, `.\mvnw.cmd spring-boot:run`. No primeiro acesso, use "Criar o primeiro funcionário", cadastre os produtos em *Dashboard → Cardápio* e crie as mesas na aba *Mesas*.
+
+O app usa as tabelas `Mesa` e a coluna `Comanda.Status` (`Aberta` / `Fechada`). Mesa livre é a que não tem comanda aberta, e cada mesa só pode ter uma comanda aberta.
+
 ## 4. Fluxo de uso no app
 
 | # | Ação | Endpoint |
@@ -95,7 +111,7 @@ Formas de pagamento: `DINHEIRO`, `PIX`, `CARTAO_CREDITO`, `CARTAO_DEBITO`.
 
 **Cardápio e preço**
 - Cada produto tem preço da **manhã** e, opcionalmente, da **noite** (sem preço da noite, vale o da manhã).
-- Noite = das 18:00 às 05:00 (ajuste em `application.yml`).
+- Dia até as 17:00; noite = das 17:00 às 05:00 (ajuste em `application.yml`).
 - O turno é o do **horário de abertura da comanda**: comanda aberta às 17:50 paga preço da manhã até o fim.
 - Nome de produto não se repete. Produto que já foi vendido não pode ser excluído.
 

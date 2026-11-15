@@ -37,7 +37,8 @@ class FluxoRestauranteTest {
         @Primary
         Clock relogioFixo() {
             ZoneId sp = ZoneId.of("America/Sao_Paulo");
-            return Clock.fixed(ZonedDateTime.of(2026, 11, 6, 19, 0, 0, 0, sp).toInstant(), sp);
+            // Hoje às 19:00: com uma data fixa no passado o token JWT do teste já nasceria vencido.
+            return Clock.fixed(ZonedDateTime.now(sp).withHour(19).withMinute(0).withSecond(0).withNano(0).toInstant(), sp);
         }
     }
 

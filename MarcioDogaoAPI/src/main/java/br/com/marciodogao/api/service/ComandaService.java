@@ -18,6 +18,7 @@ import br.com.marciodogao.api.exception.NaoEncontradoException;
 import br.com.marciodogao.api.exception.RegraNegocioException;
 import br.com.marciodogao.api.repository.ComandaRepository;
 import br.com.marciodogao.api.repository.LoginRepository;
+import br.com.marciodogao.api.repository.MesaRepository;
 import br.com.marciodogao.api.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 
 /**
  * REGRAS DA COMANDA:
- * - Não pode haver duas comandas ABERTAS com o mesmo número.
+ * - Não pode haver duas comandas ABERTAS com o mesmo número, nem duas na mesma mesa.
  * - O horário de abertura define o turno e, portanto, o preço (manhã / noite) de todos os itens.
  * - Comanda FECHADA (tudo pago) não recebe novos pedidos.
  * - Pedido pago não pode ser alterado nem removido; comanda com algum pagamento não pode ser cancelada.
@@ -42,9 +43,11 @@ public class ComandaService {
     private final LoginRepository logins;
     private final CardapioService cardapio;
     private final TurnoService turnos;
+    private final MesaRepository mesas;
 
     public ComandaService(ComandaRepository comandas, PedidoRepository pedidos, LoginRepository logins,
-                          CardapioService cardapio, TurnoService turnos) {
+                          CardapioService cardapio, TurnoService turnos, MesaRepository mesas) {
+        this.mesas = mesas;
         this.comandas = comandas;
         this.pedidos = pedidos;
         this.logins = logins;
@@ -63,6 +66,15 @@ public class ComandaService {
                 .orElseThrow(() -> new NaoEncontradoException("Funcionário logado não encontrado."));
 
         String mesa = req.mesa() == null || req.mesa().isBlank() ? null : req.mesa().trim();
+        if (mesa != null) {
+            if (mesas.count() > 0 && !mesas.existsByNumero(mesa)) {
+                throw new RegraNegocioException("A mesa " + mesa + " não está cadastrada.");
+            }
+            boolean mesaOcupada = comandas.findAbertas().stream().anyMatch(c -> mesa.equals(c.getMesa()));
+            if (mesaOcupada) {
+                throw new RegraNegocioException("A mesa " + mesa + " já tem uma comanda aberta.");
+            }
+        }
         Comanda comanda = new Comanda(numero, mesa, turnos.agora(), nomeDoFuncionario(req.nomeFuncionario(), funcionario), funcionario);
         return resposta(comandas.save(comanda));
     }

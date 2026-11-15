@@ -61,8 +61,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/registrar").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cardapio", "/api/cardapio/**").permitAll()
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(HttpMethod.GET, "/api/info").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        // fora de /api ficam só as telas do app (arquivos estáticos) e o Swagger
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()));
         return http.build();
     }

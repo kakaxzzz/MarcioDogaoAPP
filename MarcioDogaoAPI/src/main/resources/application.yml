@@ -26,8 +26,8 @@ spring:
 
 restaurante:
   fuso-horario: America/Sao_Paulo
-  # Das 18:00 até as 05:00 vale o preço "Noturno" da tabela Preco; no resto do dia vale "Manha".
-  turno-noturno-inicio: "18:00"
+  # Das 17:00 até as 05:00 vale o preço "Noturno" da tabela Preco; no resto do dia vale "Manha".
+  turno-noturno-inicio: "17:00"
   turno-noturno-fim: "05:00"
   jwt:
     # Troque em produção: export JWT_SECRET="uma frase longa e secreta com 32+ caracteres"

@@ -70,7 +70,8 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <!-- runtime: usado nos testes e no perfil "demo" (banco em memória) -->
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
