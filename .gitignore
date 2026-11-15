@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Regras que só existiam no .gitignore criado pelo Visual Studio no GitHub
+[Oo]ut/
+FodyWeavers.xsd
